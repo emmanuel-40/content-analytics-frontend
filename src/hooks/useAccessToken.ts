@@ -5,10 +5,7 @@ import { getAccessToken, onAccessTokenChange } from '@/lib/api'
 export function useAccessToken(): string | null {
   const [token, setToken] = useState<string | null>(getAccessToken())
 
-  useEffect(() => {
-    onAccessTokenChange(setToken)
-    return () => onAccessTokenChange(() => {})
-  }, [])
+  useEffect(() => onAccessTokenChange(setToken), [])
 
   return token
 }

@@ -6,6 +6,7 @@ import {
   onSessionExpired,
   refreshSession,
   setAccessToken,
+  setCsrfToken,
 } from '@/lib/api'
 import { queryKeys } from '@/lib/queryClient'
 import { AuthContext, type AuthContextValue } from '@/hooks/authContext'
@@ -45,19 +46,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     enabled: Boolean(user),
   })
 
-  useEffect(() => {
-    onSessionExpired(() => {
-      setAccessToken(null)
-      queryClient.setQueryData(queryKeys.session, null)
-      queryClient.clear()
-    })
-    return () => onSessionExpired(() => {})
-  }, [queryClient])
+  useEffect(
+    () =>
+      onSessionExpired(() => {
+        setAccessToken(null)
+        queryClient.setQueryData(queryKeys.session, null)
+        queryClient.clear()
+      }),
+    [queryClient],
+  )
 
   const login = useCallback(
     async (input: LoginRequest) => {
       const tokens = await apiClient.post<TokenResponse>('/api/auth/login', input, { auth: false })
       setAccessToken(tokens.accessToken)
+      setCsrfToken(null)
       const me = await apiClient.get<CurrentUser>('/api/auth/me')
       queryClient.setQueryData(queryKeys.session, me)
     },

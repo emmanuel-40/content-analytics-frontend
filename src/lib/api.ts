@@ -27,19 +27,28 @@ export class ApiError extends Error {
 
 // ── Session token (memory only — never persisted to storage) ──────────────
 let accessToken: string | null = null
-let tokenListener: (token: string | null) => void = () => {}
-let sessionExpiredHandler: () => void = () => {}
+const tokenListeners = new Set<(token: string | null) => void>()
+const sessionExpiredHandlers = new Set<() => void>()
 
 export const getAccessToken = () => accessToken
 export function setAccessToken(token: string | null) {
   accessToken = token
-  tokenListener(token)
+  tokenListeners.forEach((listener) => listener(token))
 }
 export function onAccessTokenChange(listener: (token: string | null) => void) {
-  tokenListener = listener
+  tokenListeners.add(listener)
+  return () => {
+    tokenListeners.delete(listener)
+  }
 }
 export function onSessionExpired(handler: () => void) {
-  sessionExpiredHandler = handler
+  sessionExpiredHandlers.add(handler)
+  return () => {
+    sessionExpiredHandlers.delete(handler)
+  }
+}
+function notifySessionExpired() {
+  sessionExpiredHandlers.forEach((handler) => handler())
 }
 
 // ── CSRF ──────────────────────────────────────────────────────────────────
@@ -160,7 +169,7 @@ async function request<T>(path: string, options: RequestOptions & { method: stri
   if (res.status === 401 && auth && retryOn401) {
     const refreshed = await refreshSession()
     if (refreshed) return request<T>(path, { ...options, retryOn401: false })
-    sessionExpiredHandler()
+    notifySessionExpired()
   }
 
   if (!res.ok) {
