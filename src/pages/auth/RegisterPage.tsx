@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/ui/Button'
@@ -12,7 +12,6 @@ import { ApiError } from '@/lib/api'
 import { registerSchema, type RegisterForm } from '@/lib/schemas'
 
 export function RegisterPage() {
-  const navigate = useNavigate()
   const { register: registerUser } = useAuth()
   const [done, setDone] = useState(false)
   const {

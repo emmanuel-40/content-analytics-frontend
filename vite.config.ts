@@ -20,4 +20,21 @@ export default defineConfig({
       '/ws': { target: 'ws://localhost:8080', ws: true },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Keep the initial bundle small and caches granular.
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return
+          if (id.includes('@tanstack/react-query')) return 'query'
+          if (id.includes('@stomp/stompjs') || id.includes('sockjs-client')) return 'realtime'
+          if (id.includes('react-router')) return 'router'
+          if (id.includes('react-hook-form') || id.includes('@hookform/resolvers') || id.includes('zod')) return 'forms'
+          if (id.includes('lucide-react')) return 'icons'
+          if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('scheduler')) return 'react-vendor'
+          return 'vendor'
+        },
+      },
+    },
+  },
 })

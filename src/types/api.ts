@@ -204,14 +204,10 @@ export interface CreditTransaction {
   createdAt: string
 }
 
-export interface PaymentPack {
-  credits: number
-  amountKobo: number
-}
-
 export interface PaymentStatus {
   configured: boolean
-  packs: Record<string, number> | PaymentPack[]
+  /** Fixed credit pack -> price in kobo, e.g. { "10": 100000 }. */
+  packs: Record<string, number>
   currency: string
 }
 

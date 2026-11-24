@@ -34,10 +34,6 @@ const features = [
   },
 ]
 
-function SparkleIcon({ className }: { className?: string }) {
-  return <BarChart3 className={className} />
-}
-
 export function Features() {
   return (
     <section id="features" className="container-page scroll-mt-20 py-20 sm:py-28">

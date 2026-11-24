@@ -10,7 +10,10 @@ import { Field, Input } from '@/components/ui/Field'
 import { ApiError, apiClient, apiUrl } from '@/lib/api'
 import { loginSchema, type LoginForm } from '@/lib/schemas'
 import { useAuth } from '@/hooks/useAuth'
+import { queryKeys } from '@/lib/queryClient'
 import { useQuery } from '@tanstack/react-query'
+
+const GOOGLE_URL = import.meta.env.VITE_GOOGLE_OAUTH_URL || '/oauth2/authorization/google'
 
 export function LoginPage() {
   const navigate = useNavigate()
@@ -24,7 +27,7 @@ export function LoginPage() {
   } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) })
 
   const { data: providers } = useQuery({
-    queryKey: ['providers'],
+    queryKey: queryKeys.providers,
     queryFn: () => apiClient.get<{ google: boolean }>('/api/auth/providers', { auth: false }),
     staleTime: Infinity,
   })
@@ -44,7 +47,7 @@ export function LoginPage() {
     <AuthLayout title="Welcome back" description="Sign in to continue analysing your documents.">
       {providers?.google && (
         <>
-          <a href={apiUrl('/oauth2/authorization/google')} className="block">
+          <a href={GOOGLE_URL.startsWith('http') ? GOOGLE_URL : apiUrl(GOOGLE_URL)} className="block">
             <Button variant="outline" className="w-full" type="button">
               <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z" />

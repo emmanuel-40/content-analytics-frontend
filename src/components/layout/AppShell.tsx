@@ -96,11 +96,13 @@ export function AppShell({ children }: { children: ReactNode }) {
           {user && (
             <div className="flex items-center gap-3">
               <div className="hidden text-right sm:block">
-                <div className="text-sm font-medium text-zinc-200">{user.displayName ?? user.username}</div>
+                <div className="text-sm font-medium text-zinc-200">
+                  {[user.firstName, user.lastName].filter(Boolean).join(' ') || user.username}
+                </div>
                 <div className="text-xs text-zinc-500">{user.email}</div>
               </div>
               <div className="flex h-9 w-9 items-center justify-center rounded-full border border-signal-500/30 bg-signal-400/10 text-xs font-bold text-signal-300">
-                {initials(user.displayName ?? user.username)}
+                {initials([user.firstName, user.lastName].filter(Boolean).join(' ') || user.username)}
               </div>
             </div>
           )}
