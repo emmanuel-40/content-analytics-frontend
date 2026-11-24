@@ -19,6 +19,11 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- sockjs-client (used by @stomp/stompjs for live document updates) still
+         references Node's `global`; expose it before any module is evaluated. -->
+    <script>
+      window.global = window
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -13,7 +13,7 @@ export function AuthLayout({
   children: ReactNode
 }) {
   return (
-    <div className="grid-bg relative flex min-h-screen items-center justify-center overflow-hidden bg-ink-950 px-5 py-12">
+    <div className="grid-bg relative flex min-h-dvh items-start justify-center overflow-x-hidden bg-ink-950 px-5 py-10 sm:items-center sm:py-12">
       <div className="pointer-events-none absolute left-1/2 top-0 h-72 w-[36rem] -translate-x-1/2 rounded-full bg-signal-500/10 blur-[100px]" />
       <div className="relative w-full max-w-md">
         <Link

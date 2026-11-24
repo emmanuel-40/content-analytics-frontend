@@ -16,7 +16,7 @@ export default defineConfig({
     proxy: {
       '/api': { target: 'http://localhost:8080', changeOrigin: true },
       '/oauth2': { target: 'http://localhost:8080', changeOrigin: true },
-      '/login': { target: 'http://localhost:8080', changeOrigin: true },
+      // No `/login` proxy: that is an SPA route as well as an OAuth backend path.
       '/ws': { target: 'ws://localhost:8080', ws: true },
     },
   },
