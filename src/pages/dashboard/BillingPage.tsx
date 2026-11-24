@@ -87,27 +87,36 @@ export function BillingPage() {
           Payments are not configured on this deployment yet. Contact the administrator.
         </p>
       ) : (
-        <div className="mt-4 grid gap-4 md:grid-cols-3">
-          {packs.map(({ credits, kobo }) => (
-            <Card key={credits} className="surface-hover flex flex-col p-5">
-              <p className="text-sm font-semibold text-zinc-100">{credits} credits</p>
-              <p className="mt-1 text-xs text-zinc-500">{PACK_COPY[credits] ?? 'Analysis credits'}</p>
-              <p className="mt-5 font-display text-3xl font-bold text-zinc-50">{naira(kobo)}</p>
-              <Button
-                className="mt-5 w-full"
-                loading={initialize.isPending}
-                onClick={() =>
-                  initialize.mutate(credits, {
-                    onSuccess: (result) => window.location.assign(result.checkoutUrl),
-                    onError: () => toast.error('Could not start checkout'),
-                  })
-                }
-              >
-                <CreditCard className="h-4 w-4" /> Buy now
-              </Button>
-            </Card>
-          ))}
-        </div>
+        <>
+          {status?.testMode && (
+            <p className="mt-4 rounded-xl border border-signal-500/25 bg-signal-400/5 px-4 py-3 text-sm text-zinc-300">
+              <span className="font-semibold text-signal-300">Sandbox mode.</span> Use Paystack’s test card{' '}
+              <span className="font-mono text-zinc-100">4084 0840 8408 4081</span> (any future expiry and CVC) —
+              no real money is charged.
+            </p>
+          )}
+          <div className="mt-4 grid gap-4 md:grid-cols-3">
+            {packs.map(({ credits, kobo }) => (
+              <Card key={credits} className="surface-hover flex flex-col p-5">
+                <p className="text-sm font-semibold text-zinc-100">{credits} credits</p>
+                <p className="mt-1 text-xs text-zinc-500">{PACK_COPY[credits] ?? 'Analysis credits'}</p>
+                <p className="mt-5 font-display text-3xl font-bold text-zinc-50">{naira(kobo)}</p>
+                <Button
+                  className="mt-5 w-full"
+                  loading={initialize.isPending}
+                  onClick={() =>
+                    initialize.mutate(credits, {
+                      onSuccess: (result) => window.location.assign(result.checkoutUrl),
+                      onError: () => toast.error('Could not start checkout'),
+                    })
+                  }
+                >
+                  <CreditCard className="h-4 w-4" /> Buy now
+                </Button>
+              </Card>
+            ))}
+          </div>
+        </>
       )}
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">

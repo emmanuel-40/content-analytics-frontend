@@ -206,6 +206,8 @@ export interface CreditTransaction {
 
 export interface PaymentStatus {
   configured: boolean
+  /** True when the backend holds Paystack sk_test_ credentials. */
+  testMode: boolean
   /** Fixed credit pack -> price in kobo, e.g. { "10": 100000 }. */
   packs: Record<string, number>
   currency: string
