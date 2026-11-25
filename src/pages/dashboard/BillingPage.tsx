@@ -15,7 +15,7 @@ import {
   useTiers,
   useVerifyPayment,
 } from '@/hooks/useBilling'
-import { formatDate, naira } from '@/lib/utils'
+import { formatDate, usd } from '@/lib/utils'
 
 const PACK_COPY: Record<number, string> = {
   10: 'A quick trial for a few files.',
@@ -54,7 +54,7 @@ export function BillingPage() {
   if (isLoading || verify.isPending) return <PageLoader label="Loading billing details…" />
 
   const packs = status?.packs
-    ? Object.entries(status.packs).map(([credits, kobo]) => ({ credits: Number(credits), kobo }))
+    ? Object.entries(status.packs).map(([credits, cents]) => ({ credits: Number(credits), cents }))
     : []
 
   return (
@@ -96,11 +96,11 @@ export function BillingPage() {
             </p>
           )}
           <div className="mt-4 grid gap-4 md:grid-cols-3">
-            {packs.map(({ credits, kobo }) => (
+            {packs.map(({ credits, cents }) => (
               <Card key={credits} className="surface-hover flex flex-col p-5">
                 <p className="text-sm font-semibold text-zinc-100">{credits} credits</p>
                 <p className="mt-1 text-xs text-zinc-500">{PACK_COPY[credits] ?? 'Analysis credits'}</p>
-                <p className="mt-5 font-display text-3xl font-bold text-zinc-50">{naira(kobo)}</p>
+                <p className="mt-5 font-display text-3xl font-bold text-zinc-50">{usd(cents)}</p>
                 <Button
                   className="mt-5 w-full"
                   loading={initialize.isPending}
@@ -156,7 +156,7 @@ export function BillingPage() {
                 {payments.map((payment) => (
                   <li key={payment.id} className="flex items-center justify-between gap-3 px-5 py-3">
                     <div>
-                      <p className="text-sm text-zinc-200">{payment.credits} credits · {naira(payment.amountKobo)}</p>
+                      <p className="text-sm text-zinc-200">{payment.credits} credits · {usd(payment.amountCents)}</p>
                       <p className="font-mono text-[11px] text-zinc-600">{payment.reference}</p>
                     </div>
                     <Badge tone={payment.status === 'SUCCESS' ? 'success' : payment.status === 'FAILED' ? 'danger' : 'warning'}>

@@ -8,14 +8,14 @@ const packs = [
   {
     name: 'Starter',
     credits: 10,
-    price: '₦1,000',
+    price: '$2.00',
     description: 'For a first look at document intelligence.',
     features: ['10 analysis credits', 'Unlimited uploads', 'Live job progress', 'Full analysis history'],
   },
   {
     name: 'Pro',
     credits: 50,
-    price: '₦4,000',
+    price: '$8.00',
     featured: true,
     description: 'For regular research and writing work.',
     features: ['50 analysis credits', 'Priority AI analysis', 'Credit usage ledger', 'Profile & avatar uploads'],
@@ -23,7 +23,7 @@ const packs = [
   {
     name: 'Scale',
     credits: 120,
-    price: '₦8,000',
+    price: '$16.00',
     description: 'For teams who live in documents.',
     features: ['120 analysis credits', 'Best value per credit', 'Full audit trail', 'All platform features'],
   },

@@ -156,9 +156,9 @@ export function BillingMockup() {
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {[
-          { name: 'Starter', credits: '10', price: '₦1,000' },
-          { name: 'Pro', credits: '50', price: '₦4,000', featured: true },
-          { name: 'Scale', credits: '120', price: '₦8,000' },
+          { name: 'Starter', credits: '10', price: '$2.00' },
+          { name: 'Pro', credits: '50', price: '$8.00', featured: true },
+          { name: 'Scale', credits: '120', price: '$16.00' },
         ].map((pack) => (
           <div
             key={pack.name}

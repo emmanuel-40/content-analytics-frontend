@@ -31,10 +31,11 @@ export function initials(name: string): string {
     .join('')
 }
 
-export function naira(kobo: number): string {
-  return new Intl.NumberFormat('en-NG', {
+export function usd(cents: number): string {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'NGN',
+    currency: 'USD',
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(kobo / 100)
+  }).format(cents / 100)
 }

@@ -208,8 +208,9 @@ export interface PaymentStatus {
   configured: boolean
   /** True when the backend holds Paystack sk_test_ credentials. */
   testMode: boolean
-  /** Fixed credit pack -> price in kobo, e.g. { "10": 100000 }. */
+  /** Fixed credit pack -> price in USD cents, e.g. { "10": 200 }. */
   packs: Record<string, number>
+  /** ISO currency code, always "USD" for the Paystack integration. */
   currency: string
 }
 
@@ -217,7 +218,7 @@ export interface InitializePaymentResponse {
   reference: string
   checkoutUrl: string
   accessCode: string
-  amountKobo: number
+  amountCents: number
   credits: number
   status: string
   publicKey: string
@@ -228,7 +229,7 @@ export interface PaymentTransaction {
   userId: string
   reference: string
   provider: string
-  amountKobo: number
+  amountCents: number
   credits: number
   status: 'PENDING' | 'SUCCESS' | 'FAILED'
   checkoutUrl?: string
