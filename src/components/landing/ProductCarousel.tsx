@@ -47,7 +47,7 @@ export function ProductCarousel() {
 
   return (
     <div
-      className="relative mx-auto w-full max-w-5xl"
+      className="relative mx-auto w-full max-w-5xl overflow-x-clip"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
