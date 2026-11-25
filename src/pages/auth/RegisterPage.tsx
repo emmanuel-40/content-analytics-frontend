@@ -54,7 +54,7 @@ export function RegisterPage() {
 
   return (
     <AuthLayout title="Create your account" description="Start with free monthly credits. No card needed.">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5" noValidate>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="First name" error={errors.firstName?.message}>
             <Input {...register('firstName')} autoComplete="given-name" placeholder="Ada" />
@@ -64,21 +64,25 @@ export function RegisterPage() {
           </Field>
         </div>
 
-        <Field label="Username" error={errors.username?.message} hint="Letters, numbers, _ and - only">
-          <Input {...register('username')} autoComplete="username" placeholder="ada-lovelace" invalid={!!errors.username} />
-        </Field>
+        <div className="grid gap-3.5 sm:grid-cols-2">
+          <Field label="Username" error={errors.username?.message} hint="Letters, numbers, _ and - only">
+            <Input {...register('username')} autoComplete="username" placeholder="ada-lovelace" invalid={!!errors.username} />
+          </Field>
 
-        <Field label="Email" error={errors.email?.message}>
-          <Input {...register('email')} type="email" autoComplete="email" placeholder="you@example.com" invalid={!!errors.email} />
-        </Field>
+          <Field label="Email" error={errors.email?.message}>
+            <Input {...register('email')} type="email" autoComplete="email" placeholder="you@example.com" invalid={!!errors.email} />
+          </Field>
+        </div>
 
-        <Field label="Password" error={errors.password?.message} hint="Upper, lower, number and @$!%*?&">
-          <Input {...register('password')} type="password" autoComplete="new-password" placeholder="••••••••" invalid={!!errors.password} />
-        </Field>
+        <div className="grid gap-3.5 sm:grid-cols-2">
+          <Field label="Password" error={errors.password?.message} hint="Upper, lower, number and @$!%*?&">
+            <Input {...register('password')} type="password" autoComplete="new-password" placeholder="••••••••" invalid={!!errors.password} />
+          </Field>
 
-        <Field label="Confirm password" error={errors.confirmPassword?.message}>
-          <Input {...register('confirmPassword')} type="password" autoComplete="new-password" placeholder="••••••••" invalid={!!errors.confirmPassword} />
-        </Field>
+          <Field label="Confirm password" error={errors.confirmPassword?.message}>
+            <Input {...register('confirmPassword')} type="password" autoComplete="new-password" placeholder="••••••••" invalid={!!errors.confirmPassword} />
+          </Field>
+        </div>
 
         {errors.root && (
           <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">

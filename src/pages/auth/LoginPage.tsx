@@ -64,7 +64,7 @@ export function LoginPage() {
         </>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5" noValidate>
         <Field label="Username" error={errors.username?.message}>
           <Input {...register('username')} autoComplete="username" placeholder="your-username" invalid={!!errors.username} />
         </Field>
