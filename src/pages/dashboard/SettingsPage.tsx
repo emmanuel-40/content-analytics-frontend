@@ -96,7 +96,7 @@ export function SettingsPage() {
                   onSubmit={async (input) => {
                     try {
                       await changePassword.mutateAsync(input)
-                      toast.success('Password changed — sign in again')
+                      toast.success('Password changed. Sign in again')
                       await logout()
                       navigate('/login')
                     } catch (error) {

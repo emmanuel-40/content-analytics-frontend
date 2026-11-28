@@ -17,7 +17,7 @@ const steps = [
     icon: Sparkles,
     number: '03',
     title: 'Read the insight',
-    description: 'Get a summary, topics and sentiment with live progress — then download or share the file.',
+    description: 'Get a summary, topics and sentiment with live progress, then download the analysis report.',
   },
 ]
 

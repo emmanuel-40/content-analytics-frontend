@@ -15,6 +15,7 @@ import {
   useTiers,
   useVerifyPayment,
 } from '@/hooks/useBilling'
+import { ApiError } from '@/lib/api'
 import { formatDate, usd } from '@/lib/utils'
 
 const PACK_COPY: Record<number, string> = {
@@ -40,7 +41,7 @@ export function BillingPage() {
     verified.current = true
     verify.mutate(reference, {
       onSuccess: (payment) => {
-        if (payment.status === 'SUCCESS') toast.success('Payment confirmed — credits added')
+        if (payment.status === 'SUCCESS') toast.success('Payment confirmed. Credits added')
         else toast.info(`Payment is ${payment.status.toLowerCase()}`)
         setParams({}, { replace: true })
       },
@@ -64,12 +65,12 @@ export function BillingPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Card className="surface-hover p-5">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-500"><Sparkles className="h-4 w-4 text-signal-400" /> Available</div>
-          <p className="mt-3 font-display text-4xl font-bold text-signal-300">{subscription?.availableCredits ?? '—'}</p>
+          <p className="mt-3 font-display text-4xl font-bold text-signal-300">{subscription?.availableCredits ?? 'N/A'}</p>
           <p className="mt-1 text-xs text-zinc-500">Credits ready to use</p>
         </Card>
         <Card className="p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Current tier</div>
-          <p className="mt-3 font-display text-2xl font-bold text-zinc-50">{subscription?.tier ?? '—'}</p>
+          <p className="mt-3 font-display text-2xl font-bold text-zinc-50">{subscription?.tier ?? 'N/A'}</p>
           <p className="mt-1 text-xs text-zinc-500">
             {subscription?.monthlyCreditAllowance ?? 0} monthly · {subscription?.creditsUsedThisPeriod ?? 0} used
           </p>
@@ -91,8 +92,8 @@ export function BillingPage() {
           {status?.testMode && (
             <p className="mt-4 rounded-xl border border-signal-500/25 bg-signal-400/5 px-4 py-3 text-sm text-zinc-300">
               <span className="font-semibold text-signal-300">Sandbox mode.</span> Use Paystack’s test card{' '}
-              <span className="font-mono text-zinc-100">4084 0840 8408 4081</span> (any future expiry and CVC) —
-              no real money is charged.
+              <span className="font-mono text-zinc-100">4084 0840 8408 4081</span> (any future expiry and CVC).{' '}
+              No real money is charged.
             </p>
           )}
           <div className="mt-4 grid gap-4 md:grid-cols-3">
@@ -107,7 +108,8 @@ export function BillingPage() {
                   onClick={() =>
                     initialize.mutate(credits, {
                       onSuccess: (result) => window.location.assign(result.checkoutUrl),
-                      onError: () => toast.error('Could not start checkout'),
+                      onError: (error) =>
+                        toast.error(error instanceof ApiError ? error.message : 'Could not start checkout'),
                     })
                   }
                 >

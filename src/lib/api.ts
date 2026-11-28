@@ -25,7 +25,7 @@ export class ApiError extends Error {
   }
 }
 
-// ── Session token (memory only — never persisted to storage) ──────────────
+// ── Session token (memory only, never persisted to storage) ──────────────
 let accessToken: string | null = null
 const tokenListeners = new Set<(token: string | null) => void>()
 const sessionExpiredHandlers = new Set<() => void>()
@@ -113,6 +113,23 @@ export async function refreshSession(): Promise<boolean> {
   }
 }
 
+/**
+ * JWT payload expiry is public (signature is what makes it trustworthy). Refreshing a few
+ * seconds before `exp` avoids a wasted 401 round trip and the scary console error that
+ * comes with it, while the 401 retry below remains the safety net for clock skew.
+ */
+function tokenIsExpiring(token: string | null): boolean {
+  if (!token) return false
+  try {
+    const segment = token.split('.')[1]
+    if (!segment) return false
+    const payload = JSON.parse(atob(segment.replace(/-/g, '+').replace(/_/g, '/'))) as { exp?: number }
+    return typeof payload.exp === 'number' && payload.exp * 1000 <= Date.now() + 5_000
+  } catch {
+    return false
+  }
+}
+
 // ── Core request ──────────────────────────────────────────────────────────
 export interface RequestOptions {
   body?: unknown
@@ -137,6 +154,11 @@ async function request<T>(path: string, options: RequestOptions & { method: stri
     signal,
     retryOn401 = true,
   } = options
+
+  if (auth && retryOn401 && tokenIsExpiring(accessToken)) {
+    const refreshed = await refreshSession()
+    if (!refreshed) notifySessionExpired()
+  }
 
   const finalHeaders: Record<string, string> = { ...headers }
   let payload: BodyInit | undefined
@@ -163,7 +185,7 @@ async function request<T>(path: string, options: RequestOptions & { method: stri
     })
   } catch (error) {
     if ((error as Error)?.name === 'AbortError') throw error
-    throw new ApiError(0, { status: 0, message: 'Network error — is the backend running?' })
+    throw new ApiError(0, { status: 0, message: 'Network error. Please try again.' })
   }
 
   if (res.status === 401 && auth && retryOn401) {

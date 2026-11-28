@@ -78,7 +78,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-signal-300">
               <Sparkles className="h-3.5 w-3.5" /> Credits
             </div>
-            <div className="mt-1 text-xl font-bold text-zinc-50">{credits ?? '—'}</div>
+            <div className="mt-1 text-xl font-bold text-zinc-50">{credits ?? 'N/A'}</div>
             <Link to="/app/billing" className="mt-1 block text-xs text-zinc-500 hover:text-signal-300">Top up →</Link>
           </div>
           <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-ink-800 hover:text-red-300">

@@ -20,7 +20,7 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-zinc-400 sm:text-lg">
-          Drop in a PDF or Office file and get a structured summary, key topics and sentiment —
+          Drop in a PDF or Office file and get a structured summary, key topics and sentiment,
           with credit-aware usage and live job progress built right in.
         </p>
 

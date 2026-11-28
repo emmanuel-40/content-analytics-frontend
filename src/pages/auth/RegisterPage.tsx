@@ -1,14 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQuery } from '@tanstack/react-query'
 import { ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { AuthLayout } from '@/components/layout/AuthLayout'
+import { GoogleSignInButton } from '@/components/shared/GoogleSignInButton'
 import { Button } from '@/components/ui/Button'
 import { Field, Input } from '@/components/ui/Field'
 import { useAuth } from '@/hooks/useAuth'
-import { ApiError } from '@/lib/api'
+import { ApiError, apiClient } from '@/lib/api'
+import { queryKeys } from '@/lib/queryClient'
 import { registerSchema, type RegisterForm } from '@/lib/schemas'
 
 export function RegisterPage() {
@@ -21,6 +24,15 @@ export function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterForm>({ resolver: zodResolver(registerSchema) })
 
+  const { data: providers } = useQuery({
+    queryKey: queryKeys.providers,
+    queryFn: () => apiClient.get<{ google: boolean }>('/api/auth/providers', { auth: false }),
+    staleTime: Infinity,
+  })
+  // Show the button while the lookup is loading or if the backend is briefly
+  // restarting. Only an explicit `false` from the server hides it.
+  const googleEnabled = providers?.google ?? true
+
   const onSubmit = async (values: RegisterForm) => {
     try {
       await registerUser({
@@ -31,7 +43,7 @@ export function RegisterPage() {
         lastName: values.lastName,
       })
       setDone(true)
-      toast.success('Account created — check your inbox')
+      toast.success('Account created. Check your inbox')
     } catch (error) {
       const message = error instanceof ApiError ? error.message : 'Unable to create account'
       setError('root', { message })
@@ -54,6 +66,15 @@ export function RegisterPage() {
 
   return (
     <AuthLayout title="Create your account" description="Start with free monthly credits. No card needed.">
+      {googleEnabled && (
+        <>
+          <GoogleSignInButton label="Sign up with Google" />
+          <div className="my-6 flex items-center gap-3 text-[10px] uppercase tracking-widest text-zinc-600">
+            <span className="h-px flex-1 bg-ink-700" /> or sign up with email <span className="h-px flex-1 bg-ink-700" />
+          </div>
+        </>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5" noValidate>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="First name" error={errors.firstName?.message}>

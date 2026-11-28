@@ -18,7 +18,7 @@ export function UploadCard({ compact = false }: { compact?: boolean }) {
       { file, description: description || undefined },
       {
         onSuccess: (document) => {
-          toast.success(`Uploaded ${document.fileName} — analysis started`)
+          toast.success(`Uploaded ${document.fileName}. Analysis started`)
           setDescription('')
         },
         onError: (error) =>

@@ -63,7 +63,7 @@ export function DashboardPage() {
               <Skeleton className="mt-4 h-8 w-20" />
             ) : (
               <p className="mt-3 font-display text-3xl font-bold text-zinc-50">
-                {value === undefined ? '—' : formatNumber(value)}
+                {value === undefined ? 'N/A' : formatNumber(value)}
               </p>
             )}
           </Card>

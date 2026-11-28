@@ -5,15 +5,14 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { AuthLayout } from '@/components/layout/AuthLayout'
+import { GoogleSignInButton } from '@/components/shared/GoogleSignInButton'
 import { Button } from '@/components/ui/Button'
 import { Field, Input } from '@/components/ui/Field'
-import { ApiError, apiClient, apiUrl } from '@/lib/api'
+import { ApiError, apiClient } from '@/lib/api'
 import { loginSchema, type LoginForm } from '@/lib/schemas'
 import { useAuth } from '@/hooks/useAuth'
 import { queryKeys } from '@/lib/queryClient'
 import { useQuery } from '@tanstack/react-query'
-
-const GOOGLE_URL = import.meta.env.VITE_GOOGLE_OAUTH_URL || '/oauth2/authorization/google'
 
 export function LoginPage() {
   const navigate = useNavigate()
@@ -31,6 +30,9 @@ export function LoginPage() {
     queryFn: () => apiClient.get<{ google: boolean }>('/api/auth/providers', { auth: false }),
     staleTime: Infinity,
   })
+  // Show the button while the lookup is loading or if the backend is briefly
+  // restarting. Only an explicit `false` from the server hides it.
+  const googleEnabled = providers?.google ?? true
 
   const onSubmit = async (values: LoginForm) => {
     try {
@@ -45,19 +47,9 @@ export function LoginPage() {
 
   return (
     <AuthLayout title="Welcome back" description="Sign in to continue analysing your documents.">
-      {providers?.google && (
+      {googleEnabled && (
         <>
-          <a href={GOOGLE_URL.startsWith('http') ? GOOGLE_URL : apiUrl(GOOGLE_URL)} className="block">
-            <Button variant="outline" className="w-full" type="button">
-              <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z" />
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z" />
-                <path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84Z" />
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38Z" />
-              </svg>
-              Continue with Google
-            </Button>
-          </a>
+          <GoogleSignInButton />
           <div className="my-6 flex items-center gap-3 text-[10px] uppercase tracking-widest text-zinc-600">
             <span className="h-px flex-1 bg-ink-700" /> or use your account <span className="h-px flex-1 bg-ink-700" />
           </div>

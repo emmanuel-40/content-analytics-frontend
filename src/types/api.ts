@@ -105,6 +105,8 @@ export interface DocumentListItem {
   processingProgress?: number
   sentiment?: string
   wordCount?: number
+  summary?: string
+  processingError?: string
   createdAt: string
   processingCompletedAt?: string
 }

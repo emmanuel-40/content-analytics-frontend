@@ -6,7 +6,7 @@ import { ProgressBar, SentimentBadge, StatusBadge } from '@/components/shared/St
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { EmptyState, PageLoader } from '@/components/ui/Feedback'
-import { downloadDocument, useDocument, useRetryDocument, useDocumentStatus } from '@/hooks/useDocuments'
+import { downloadAnalysisReport, useDocument, useRetryDocument, useDocumentStatus } from '@/hooks/useDocuments'
 import { formatBytes, formatDate } from '@/lib/utils'
 
 function parseTopics(raw?: string): string[] {
@@ -61,11 +61,15 @@ export function DocumentDetailPage() {
               </Button>
             )}
             <Button
+              disabled={document.status !== 'COMPLETED'}
+              title={document.status === 'COMPLETED' ? undefined : 'Report available after analysis completes'}
               onClick={() =>
-                downloadDocument(document.id, document.fileName).catch(() => toast.error('Download failed'))
+                downloadAnalysisReport(document.id, document.fileName)
+                  .then(() => toast.success('Report downloaded'))
+                  .catch(() => toast.error('Report download failed'))
               }
             >
-              <Download className="h-4 w-4" /> Download
+              <Download className="h-4 w-4" /> Download report
             </Button>
           </div>
         }
@@ -124,12 +128,12 @@ export function DocumentDetailPage() {
             <dl className="space-y-3 text-sm">
               {[
                 ['Status', document.status],
-                ['Pages', document.pageCount ?? '—'],
-                ['Words', document.wordCount ?? '—'],
-                ['Characters', document.characterCount ?? '—'],
-                ['Confidence', document.confidenceScore != null ? `${Math.round(document.confidenceScore)}%` : '—'],
-                ['MIME type', document.mimeType ?? '—'],
-                ['Completed', document.processingCompletedAt ? formatDate(document.processingCompletedAt) : '—'],
+                ['Pages', document.pageCount ?? 'N/A'],
+                ['Words', document.wordCount ?? 'N/A'],
+                ['Characters', document.characterCount ?? 'N/A'],
+                ['Confidence', document.confidenceScore != null ? `${Math.round(document.confidenceScore)}%` : 'N/A'],
+                ['MIME type', document.mimeType ?? 'N/A'],
+                ['Completed', document.processingCompletedAt ? formatDate(document.processingCompletedAt) : 'N/A'],
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between gap-4">
                   <dt className="text-zinc-500">{label}</dt>

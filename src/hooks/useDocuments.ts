@@ -11,11 +11,21 @@ import type {
   Paged,
 } from '@/types/api'
 
+/** WebSocket is primary, but polling guarantees the list eventually converges if a frame is missed. */
+function pollWhileInFlight(content: DocumentListItem[] | undefined): number | false {
+  return content?.some(
+    (item) => item.status === 'UPLOADED' || item.status === 'PROCESSING',
+  )
+    ? 4000
+    : false
+}
+
 export function useDocumentList(page = 0, size = 12, enabled = true) {
   return useQuery({
     queryKey: [...queryKeys.documents, 'list', page, size],
     queryFn: () => apiClient.get<Paged<DocumentListItem>>(`/api/documents${qs({ page, size })}`),
     enabled,
+    refetchInterval: (query) => pollWhileInFlight(query.state.data?.content),
   })
 }
 
@@ -24,6 +34,7 @@ export function useDocumentSearch(filter: DocumentSearchFilter, enabled = true) 
     queryKey: [...queryKeys.documents, 'search', filter],
     queryFn: () => apiClient.post<Paged<DocumentListItem>>('/api/documents/search', filter),
     enabled,
+    refetchInterval: (query) => pollWhileInFlight(query.state.data?.content),
   })
 }
 
@@ -94,18 +105,20 @@ export function useRetryDocument() {
   })
 }
 
-export async function downloadDocument(id: string, fileName: string) {
+export async function downloadAnalysisReport(id: string, fileName: string) {
   const token = getAccessToken()
-  const response = await fetch(`${apiUrl('/api/documents')}/${id}/download`, {
+  const response = await fetch(`${apiUrl('/api/documents')}/${id}/report`, {
     credentials: 'include',
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   })
-  if (!response.ok) throw new Error('Download failed')
+  if (!response.ok) throw new Error('Report download failed')
+
   const blob = await response.blob()
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
+  const baseName = fileName.replace(/\.[^.]+$/, '') || 'document'
   link.href = url
-  link.download = fileName
+  link.download = `${baseName}-analysis.txt`
   link.click()
   URL.revokeObjectURL(url)
 }

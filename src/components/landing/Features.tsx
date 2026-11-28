@@ -5,12 +5,12 @@ const features = [
   {
     icon: FileStack,
     title: 'Upload anything',
-    description: 'PDFs and Office documents go straight into a private, organised library.',
+    description: 'PDFs and Office documents become private, organised analysis records.',
   },
   {
     icon: Sparkles,
     title: 'Structured AI analysis',
-    description: 'Summaries, key topics and sentiment — consistent output you can actually use.',
+    description: 'Summaries, key topics and sentiment. Consistent output you can actually use.',
   },
   {
     icon: Radio,

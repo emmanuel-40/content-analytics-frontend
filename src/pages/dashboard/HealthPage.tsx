@@ -29,7 +29,7 @@ export function HealthPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Overall status</p>
-            <p className="mt-1 font-display text-3xl font-bold text-zinc-50">{health?.status ?? '—'}</p>
+            <p className="mt-1 font-display text-3xl font-bold text-zinc-50">{health?.status ?? 'N/A'}</p>
           </div>
           <Badge tone={health?.status === 'UP' ? 'success' : health?.status === 'DEGRADED' ? 'warning' : 'danger'}>
             {health?.environment ?? 'runtime'}
@@ -45,7 +45,7 @@ export function HealthPage() {
               {label} <Icon className="h-4 w-4 text-signal-400" />
             </div>
             <p className="mt-3 font-display text-2xl font-bold text-zinc-50">
-              {value === undefined ? '—' : typeof value === 'number' ? `${Math.round(value)}${suffix}` : value}
+              {value === undefined ? 'N/A' : typeof value === 'number' ? `${Math.round(value)}${suffix}` : value}
             </p>
           </Card>
         ))}

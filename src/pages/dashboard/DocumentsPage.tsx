@@ -12,7 +12,7 @@ import { Input, Select } from '@/components/ui/Field'
 import { useAccessToken } from '@/hooks/useAccessToken'
 import { useAuth } from '@/hooks/useAuth'
 import {
-  downloadDocument,
+  downloadAnalysisReport,
   useDeleteDocument,
   useDocumentSearch,
   useRetryDocument,
@@ -108,15 +108,23 @@ export function DocumentsPage() {
                               {document.fileName}
                             </Link>
                             <p className="mt-0.5 text-xs text-zinc-600">
-                              {document.fileSize ? formatBytes(document.fileSize) : '—'}
+                              {document.fileSize ? formatBytes(document.fileSize) : 'N/A'}
                               {document.sentiment && <> · <SentimentBadge sentiment={document.sentiment} /></>}
                             </p>
+                            {document.summary && (
+                              <p className="mt-1 truncate text-xs text-zinc-500" title={document.summary}>
+                                {document.summary}
+                              </p>
+                            )}
+                            {document.status === 'FAILED' && document.processingError && (
+                              <p className="mt-1 truncate text-xs text-red-400">{document.processingError}</p>
+                            )}
                             {document.status === 'PROCESSING' && (
                               <ProgressBar className="mt-2 max-w-52" value={document.processingProgress ?? 0} />
                             )}
                           </td>
                           <td className="px-3 py-3.5"><StatusBadge status={document.status} /></td>
-                          <td className="hidden px-3 py-3.5 text-zinc-400 md:table-cell">{document.wordCount ?? '—'}</td>
+                          <td className="hidden px-3 py-3.5 text-zinc-400 md:table-cell">{document.wordCount ?? 'N/A'}</td>
                           <td className="hidden px-3 py-3.5 text-xs text-zinc-500 lg:table-cell">{formatDate(document.createdAt)}</td>
                           <td className="px-5 py-3.5">
                             <div className="flex justify-end gap-1">
@@ -138,10 +146,12 @@ export function DocumentsPage() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                aria-label="Download document"
+                                aria-label="Download analysis report"
+                                title={document.status === 'COMPLETED' ? 'Download analysis report' : 'Report available after analysis completes'}
+                                disabled={document.status !== 'COMPLETED'}
                                 onClick={() =>
-                                  downloadDocument(document.id, document.fileName).catch(() =>
-                                    toast.error('Download failed'),
+                                  downloadAnalysisReport(document.id, document.fileName).catch(() =>
+                                    toast.error('Report download failed'),
                                   )
                                 }
                               >
