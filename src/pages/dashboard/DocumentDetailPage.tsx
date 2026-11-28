@@ -39,6 +39,7 @@ export function DocumentDetailPage() {
 
   const topics = parseTopics(document.keyTopics)
   const progress = status?.processingProgress ?? document.processingProgress ?? 0
+  const isExtractiveSummary = document.summary?.startsWith('Extractive summary from document text:')
 
   return (
     <>
@@ -102,11 +103,17 @@ export function DocumentDetailPage() {
               )}
               {document.summary ? (
                 <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Summary</h4>
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                    {isExtractiveSummary ? 'Basic summary' : 'Summary'}
+                  </h4>
                   <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-zinc-300">{document.summary}</p>
                 </div>
               ) : (
-                <p className="text-sm text-zinc-500">Analysis results will appear here when processing completes.</p>
+                <p className="text-sm text-zinc-500">
+                  {document.status === 'COMPLETED'
+                    ? 'No summary is available for this document.'
+                    : 'Analysis results will appear here when processing completes.'}
+                </p>
               )}
               {topics.length > 0 && (
                 <div>
@@ -117,6 +124,11 @@ export function DocumentDetailPage() {
                     ))}
                   </div>
                 </div>
+              )}
+              {document.status === 'COMPLETED' && (
+                <p className="border-t border-ink-800 pt-4 text-xs text-zinc-500">
+                  Download report saves the analysis shown here as a .txt file. The original upload is not included.
+                </p>
               )}
             </CardContent>
           </Card>
